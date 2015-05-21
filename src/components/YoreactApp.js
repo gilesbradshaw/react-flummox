@@ -15,7 +15,7 @@ var YoreactApp = React.createClass({
       <div className='main'>
         <ReactTransitionGroup transitionName="fade">
           <img src={imageURL} />
-          <div>hot reload...</div>
+          <div>hot reload...sssefcececesqw2</div>
         </ReactTransitionGroup>
       </div>
     );
