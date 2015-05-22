@@ -28,7 +28,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.js'],
+    extensions: ['', '.js', '.jsx'],
     alias: {
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
@@ -46,13 +46,13 @@ module.exports = {
     loaders: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'react-hot!babel-loader'
+      loader: 'react-hot!babel-loader?optional[]=runtime&stage=0',
     }, {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
     }, {
       test: /\.(png|jpg)$/,
-      loader: 'file-loader'
+      loader: 'url-loader?limit=8192'
     }]
   },
 

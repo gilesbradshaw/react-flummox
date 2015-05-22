@@ -1,5 +1,4 @@
 'use strict';
-
 var React = require('react/addons');
 var ReactTransitionGroup = React.addons.TransitionGroup;
 
