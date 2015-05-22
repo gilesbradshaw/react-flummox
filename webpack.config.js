@@ -44,6 +44,10 @@ module.exports = {
      // loader: 'jsxhint'
     //}],
     loaders: [{
+      test: /\.jsx$/,
+      exclude: /node_modules/,
+      loader: 'react-hot!babel-loader?optional[]=runtime&stage=0',
+    }, {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'react-hot!babel-loader?optional[]=runtime&stage=0',

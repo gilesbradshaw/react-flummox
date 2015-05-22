@@ -1,8 +1,11 @@
 'use strict';
 
 
-var YoreactApp = require('./YoreactApp');
-var React = require('react');
+import YoreactApp from './YoreactApp';
+import React from 'react';
+import {tryAction} from '../actions/actions';
+import {tryStore} from '../stores/store';
+
 var Router = require('react-router');
 var Route = Router.Route;
 
