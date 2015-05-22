@@ -18,4 +18,9 @@ Router.run(Routes, function (Handler) {
   React.render(<Handler/>, content);
 });
 
+const dec = function(target){ return target;}
+@dec
+class decme {}
+
+const x=new decme();
 

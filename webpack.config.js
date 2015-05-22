@@ -28,7 +28,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ["", ".js", ".jsx", "css", ".json"],
     alias: {
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
@@ -38,11 +38,11 @@ module.exports = {
     }
   },
   module: {
-    preLoaders: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'jsxhint'
-    }],
+   // preLoaders: [{
+     // test: /\.js$/,
+     // exclude: /node_modules/,
+     // loader: 'jsxhint'
+    //}],
     loaders: [{
       test: /\.js$/,
       exclude: /node_modules/,
@@ -59,6 +59,8 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
+    //new webpack.optimize.DedupePlugin(),
+    //new webpack.optimize.UglifyJsPlugin(),
     // Manually do source maps to use alternate host.
     new webpack.SourceMapDevToolPlugin(
       "main.js.map",
