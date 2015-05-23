@@ -3,18 +3,15 @@ import React, {addons, Component} from 'react/addons';
 import autobind from 'autobind-decorator';
 import pureRender from 'pure-render-decorator';
 import FluxComponent from 'flummox/component';
+import fluxComponent from '../flummox/decorators/fluxComponent';
+import fluxContext from '../flummox/decorators/fluxContext';
+
+import connectToStores from 'flummox/connect';
 
 
 require('normalize.css');
 require('../styles/main.css');
 
-const fluxContext = (target)=>
-{
-  target.contextTypes= {
-    flux: React.PropTypes.object.isRequired
-  };
-  return target
-}
 
 @fluxContext
 @pureRender
@@ -33,27 +30,24 @@ class InnerComponent extends React.Component {
     return <div>
         <button onClick={this.onClick}>click me</button>
         <ul>
-          {this.props.List.toArray().map(l=><li key={l.id}>{l.content}:-----:{l.id}</li>)}
+          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:--:{l.id}</li>)}
         </ul>
       </div>
-      
   }
 }
 
-
-
-
-class YoreactApp extends Component {
+@fluxComponent({
+  connectToStores: {
+    messages: store => ({ 
+      list: store.getMessages() 
+    }) 
+  }
+})
+export default class YoreactApp extends Component {
   render() {
-    return (
-        <FluxComponent  connectToStores={['messages']}>        
-          <InnerComponent/>
-        </FluxComponent>      
+    const {list}=this.props;
+    return (      
+          list ?<InnerComponent list={list}/>:<script/>
     );
   }
 };
-//YoreactApp.contextTypes= {
-//    flux: React.PropTypes.object.isRequired
-//};
-export default YoreactApp;
-

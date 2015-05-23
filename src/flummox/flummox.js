@@ -15,15 +15,19 @@ class MessageStore extends Store {
     this.register(messageActions.newMessage, this.handleNewMessage);
     this.messageCounter = 0;
 
-    this.state = {List:List()};
+    this.state = {list:List()};
     this.handleNewMessage("initial message");
   }
 
   handleNewMessage(content) {
     const id = this.messageCounter++;
 
-    this.setState(prev=>({List:prev.List.set(id,{content,id})}));
+    this.setState(prev=>({list:prev.list.set(id,{content,id})}));
   }
+  getMessages() { 
+    return this.state.list;
+   } 
+
 }
 
 class Flux extends Flummox {
