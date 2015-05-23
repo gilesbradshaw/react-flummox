@@ -11,11 +11,12 @@ class MessageStore extends Store {
   constructor(flux) {
     super();
 
-    const messageActions = flux.getActions('messages');
+    const messageActions = flux.getActionIds('messages');
     this.register(messageActions.newMessage, this.handleNewMessage);
     this.messageCounter = 0;
 
     this.state = {List:List()};
+    this.handleNewMessage("initial message");
   }
 
   handleNewMessage(content) {

@@ -3,27 +3,24 @@
 
 import YoreactApp from './YoreactApp';
 import React from 'react';
-import {tryAction} from '../actions/actions';
-import {tryStore} from '../stores/store';
+import {flux} from '../flummox/flummox';
+import FluxComponent from 'flummox/component';
+import Router, {Route} from 'react-router';
 
-var Router = require('react-router');
-var Route = Router.Route;
+const content = document.getElementById('content');
 
-var content = document.getElementById('content');
-
-var Routes = (
+const Routes = (
   <Route handler={YoreactApp}>
     <Route name="/" handler={YoreactApp}/>
   </Route>
 );
 
 Router.run(Routes, function (Handler) {
-  React.render(<Handler/>, content);
+  React.render(
+  	<FluxComponent flux={flux}>
+  		<Handler/>
+  	</FluxComponent>
+  	,content);
 });
 
-const dec = function(target){ return target;}
-@dec
-class decme {}
-
-const x=new decme();
 

@@ -1,59 +1,59 @@
 'use strict';
-import React, {addons} from 'react/addons';
+import React, {addons, Component} from 'react/addons';
 import autobind from 'autobind-decorator';
-import {tryAction} from '../actions/actions';
-import {Map} from 'immutable';
-import {flux} from '../flummox/flummox';
+import pureRender from 'pure-render-decorator';
 import FluxComponent from 'flummox/component';
 
 
 require('normalize.css');
 require('../styles/main.css');
 
+const fluxContext = (target)=>
+{
+  target.contextTypes= {
+    flux: React.PropTypes.object.isRequired
+  };
+  return target
+}
+
+@fluxContext
+@pureRender
 class InnerComponent extends React.Component {
-  @autobind
+  constructor(){
+    super(...arguments);
+    this.onClick=this.onClick.bind(this);
+  } 
+  onClick(){
+    const flux = this.context.flux;
+    const ids = flux.getActionIds('messages');
+    flux.getActions('messages').newMessage('Hello, world!');
+  }
   render(){
     //alert(JSON.stringify(this.props));
-    return <ul>
-        {this.props.List.toArray().map(l=><li key={l.id}>{l.content}</li>)}
-      </ul>
+    return <div>
+        <button onClick={this.onClick}>click me</button>
+        <ul>
+          {this.props.List.toArray().map(l=><li key={l.id}>{l.content}:-----:{l.id}</li>)}
+        </ul>
+      </div>
       
   }
 }
 
 
-const imageURL = require('../images/yeoman.png');
-class YoreactApp extends React.Component {
-  constructor(){
-    super(...arguments);
-    tryAction.listen((value)=>
-      {
-        this.setState(prev=>({value:value}));
-      }
-    );
-    this.state = {
-        value:'mmm'
-    };
-  }
-  onClick(){
-    tryAction('ok');
-    flux.getActions('messages').newMessage('Hello, world!');
-  }
+
+
+class YoreactApp extends Component {
   render() {
     return (
-      <FluxComponent flux={flux} connectToStores={['messages']}>
-      <InnerComponent/>
-        <div className='main'>
-          <h1>--{this.state.value}--</h1>
-          <addons.TransitionGroup>
-            <button onClick={this.onClick}>click me</button>
-            <img src={imageURL} />
-            <div>hot reload.ecdecde..sssefcececesqw2</div>
-          </addons.TransitionGroup>
-        </div>
-      </FluxComponent>
+        <FluxComponent  connectToStores={['messages']}>        
+          <InnerComponent/>
+        </FluxComponent>      
     );
   }
 };
+//YoreactApp.contextTypes= {
+//    flux: React.PropTypes.object.isRequired
+//};
 export default YoreactApp;
 
