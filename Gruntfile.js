@@ -13,7 +13,8 @@ module.exports = function (grunt) {
 
   // Read configuration from package.json
   var pkgConfig = grunt.file.readJSON('package.json');
-  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-node-inspector');
+
 
   grunt.initConfig({
     pkg: pkgConfig,
@@ -99,9 +100,22 @@ module.exports = function (grunt) {
         script: 'index.js',
         options:{
           ext: 'js,jsx,html',
-          watch:['views', 'server']
+          watch:['views', 'server'],
+          nodeArgs: ['--debug']
         }
       }
+    },
+    'node-inspector': {
+      dev: {}
+    },
+    'concurrent': {
+      dev: {
+        tasks: ['nodemon', 'node-inspector'],
+        options: {
+          logConcurrentOutput: true
+        }
+      }
+
     },
     env : {
       options : {
@@ -143,5 +157,5 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
 
-  grunt.registerTask('default', ["env:dev", "nodemon:dev"]);
+  grunt.registerTask('default', [ "env:dev", "concurrent:dev"]);
 };

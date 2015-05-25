@@ -23,9 +23,8 @@ const express = require("express"),
     publicDir = process.argv[2] || __dirname + '/public';
 
 
-
-
-app.get("/", function (req, res) {
+app.use( function (req, res, next){
+    console.log("ahhh middle ware!!!");
     if (process.env.NODE_ENV === "development") {
         webpackStats = require("./webpack-stats.json");
 
@@ -45,7 +44,9 @@ app.get("/", function (req, res) {
 
 
     res.send(h2);
-});
+    next();
+    }
+);
 
 if (app.get("env") === "development") {
   require("../webpack/server");
