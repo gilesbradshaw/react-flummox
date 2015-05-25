@@ -24,11 +24,11 @@ class InnerComponent extends React.Component {
   }
   render(){
     //alert(JSON.stringify(this.props));
-    return <div>
+    return <div> ahhhhhhhh!
+        <Link to="app">app</Link>
         <button onClick={this.onClick}>click me</button>
-         <Link to="app1">app1</Link>
         <ul>
-          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:-angie app!!-:{l.id}</li>)}
+          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:-angie!!-:{l.id}</li>)}
         </ul>
       </div>;
   };
