@@ -9,8 +9,8 @@ import fluxContext from '../flummox/decorators/fluxContext';
 import connectToStores from 'flummox/connect';
 
 
-require('normalize.css');
-require('../styles/main.css');
+//require('normalize.css');
+//require('../styles/main.css');
 
 
 @fluxContext
@@ -30,7 +30,7 @@ class InnerComponent extends React.Component {
     return <div>
         <button onClick={this.onClick}>click me</button>
         <ul>
-          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:--:{l.id}</li>)}
+          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:-angie!!-:{l.id}</li>)}
         </ul>
       </div>
   }

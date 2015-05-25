@@ -13,6 +13,7 @@ module.exports = function (grunt) {
 
   // Read configuration from package.json
   var pkgConfig = grunt.file.readJSON('package.json');
+  grunt.loadNpmTasks('grunt-shell');
 
   grunt.initConfig({
     pkg: pkgConfig,
@@ -93,6 +94,25 @@ module.exports = function (grunt) {
         ]
       }
     },
+    nodemon: {
+      dev: {
+        script: 'index.js',
+        options:{
+          ext: 'js,jsx,html',
+          watch:['views', 'server']
+        }
+      }
+    },
+    env : {
+      options : {
+        //Shared Options Hash
+      },
+      dev : {
+        NODE_ENV : 'development',
+        PORT:7000
+      }
+    },
+
 
     clean: {
       dist: {
@@ -117,9 +137,11 @@ module.exports = function (grunt) {
     ]);
   });
 
+
+
   grunt.registerTask('test', ['karma']);
 
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
 
-  grunt.registerTask('default', []);
+  grunt.registerTask('default', ["env:dev", "nodemon:dev"]);
 };
