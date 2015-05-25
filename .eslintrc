@@ -1,0 +1,27 @@
+{
+    "parser": "babel-eslint",
+    "plugins":[
+        "react"
+    ],
+    "ecmaFeatures": {
+        "arrowFunctions":true,
+        "blockBindings": true,
+        "forOf": true,
+        "jsx": true,
+        "modules": true,
+        "classes":true
+    },
+    "rules": {
+        "global-strict": 0,
+        "no-console": 0
+    },
+    "globals":{
+        "require":false,
+        "module":false,
+        "process":false,
+        "__dirname":false,
+        "console":false,
+        "document":false
+
+    }
+}

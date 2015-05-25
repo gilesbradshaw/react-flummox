@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
 var mountFolder = function (connect, dir) {
-  return connect.static(require('path').resolve(dir));
+  return connect.static(require("path").resolve(dir));
 };
 
-var webpackDistConfig = require('./webpack.dist.config.js'),
-    webpackDevConfig = require('./webpack.config.js');
+var webpackDistConfig = require("./webpack.dist.config.js"),
+    webpackDevConfig = require("./webpack.config.js");
 
 module.exports = function (grunt) {
   // Let *load-grunt-tasks* require everything
-  require('load-grunt-tasks')(grunt);
+  require("load-grunt-tasks")(grunt);
 
   // Read configuration from package.json
-  var pkgConfig = grunt.file.readJSON('package.json');
-  grunt.loadNpmTasks('grunt-node-inspector');
+  var pkgConfig = grunt.file.readJSON("package.json");
+  grunt.loadNpmTasks("grunt-node-inspector");
 
 
   grunt.initConfig({
@@ -26,13 +26,13 @@ module.exports = function (grunt) {
       }
     },
 
-    'webpack-dev-server': {
+    "webpack-dev-server": {
       options: {
         hot: true,
         port: 8000,
         webpack: webpackDevConfig,
-        publicPath: '/assets/',
-        contentBase: './<%= pkg.src %>/'
+        publicPath: "/assets/",
+        contentBase: "./<%= pkg.src %>/"
       },
 
       start: {
@@ -62,16 +62,16 @@ module.exports = function (grunt) {
         delay: 500
       },
       dev: {
-        path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/'
+        path: "http://localhost:<%= connect.options.port %>/webpack-dev-server/"
       },
       dist: {
-        path: 'http://localhost:<%= connect.options.port %>/'
+        path: "http://localhost:<%= connect.options.port %>/"
       }
     },
 
     karma: {
       unit: {
-        configFile: 'karma.conf.js'
+        configFile: "karma.conf.js"
       }
     },
 
@@ -82,48 +82,62 @@ module.exports = function (grunt) {
           {
             flatten: true,
             expand: true,
-            src: ['<%= pkg.src %>/*'],
-            dest: '<%= pkg.dist %>/',
-            filter: 'isFile'
+            src: ["<%= pkg.src %>/*"],
+            dest: "<%= pkg.dist %>/",
+            filter: "isFile"
           },
           {
             flatten: true,
             expand: true,
-            src: ['<%= pkg.src %>/images/*'],
-            dest: '<%= pkg.dist %>/images/'
+            src: ["<%= pkg.src %>/images/*"],
+            dest: "<%= pkg.dist %>/images/"
           }
         ]
       }
     },
+    eslint: {
+      standard: {
+          options: {
+              //configFile: "bower_components/eslintconfigs/standard.json"
+          },
+          src: [
+              "Gruntfile.js",
+              "server/**/*.js",
+              "server/**/*.jsx",
+              "src/**/*.js",
+              "src/**/*.jsx"
+          ]
+      }
+    },
     nodemon: {
       dev: {
-        script: 'index.js',
-        options:{
-          ext: 'js,jsx,html',
-          watch:['views', 'server'],
-          nodeArgs: ['--debug']
+        script: "index.js",
+        options: {
+          ext: "js,jsx,html",
+          watch: ["views", "server"],
+          nodeArgs: ["--debug"]
         }
       }
     },
-    'node-inspector': {
+    "node-inspector": {
       dev: {}
     },
-    'concurrent': {
+    "concurrent": {
       dev: {
-        tasks: ['nodemon', 'node-inspector'],
+        tasks: ["nodemon", "node-inspector"],
         options: {
           logConcurrentOutput: true
         }
       }
 
     },
-    env : {
-      options : {
+    env: {
+      options: {
         //Shared Options Hash
       },
-      dev : {
-        NODE_ENV : 'development',
-        PORT:7000
+      dev: {
+        NODE_ENV: "development",
+        PORT: 7000
       }
     },
 
@@ -133,29 +147,29 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '<%= pkg.dist %>'
+            "<%= pkg.dist %>"
           ]
         }]
       }
     }
   });
 
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'open:dist', 'connect:dist']);
+  grunt.registerTask("serve", function (target) {
+    if (target === "dist") {
+      return grunt.task.run(["build", "open:dist", "connect:dist"]);
     }
 
     grunt.task.run([
-      'open:dev',
-      'webpack-dev-server'
+      "open:dev",
+      "webpack-dev-server"
     ]);
   });
 
 
 
-  grunt.registerTask('test', ['karma']);
+  grunt.registerTask("test", ["karma"]);
 
-  grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+  grunt.registerTask("build", ["clean", "copy", "webpack"]);
 
-  grunt.registerTask('default', [ "env:dev", "concurrent:dev"]);
+  grunt.registerTask("default", ["eslint:standard", "env:dev", "concurrent:dev"]);
 };

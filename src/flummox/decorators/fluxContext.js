@@ -1,10 +1,9 @@
-import _ from 'lodash';
-import React from 'react';
+import React from "react";
 
 export default (target)=>
 {
-  target.contextTypes= {
+  target.contextTypes = {
     flux: React.PropTypes.object.isRequired
   };
-  return target
-}
+  return target;
+};

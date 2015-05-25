@@ -1,9 +1,12 @@
+"use strict";
+
 import React, { PropTypes } from "react";
 
 //import { trackingId } from "../config";
 //import ga from "./ga";
 //import { provideContext } from "fluxible/addons";
-const trackingId=undefined;
+
+
 class HtmlDocument extends React.Component {
 
   static propTypes = {
@@ -25,38 +28,24 @@ class HtmlDocument extends React.Component {
   }
 
   render() {
-    const { state, markup, script, css, lang } = this.props;
+    const { state, script, css, lang } = this.props;
     //const htmlHead = this.context.getStore("HtmlHeadStore");
 
     return (
-      <html lang={lang||'en-GB'}>
+      <html lang = {lang || "en-GB"}>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-
           <title>Giles app</title>
-
-        
-
-          
           { css.map((href, k) =>
             <link key={k} rel="stylesheet" type="text/css" href={href} />)
           }
-
-          { trackingId &&
-            <script dangerouslySetInnerHTML={{__html: ga.replace("{trackingId}", trackingId)}} />
-          }
-
         </head>
-
         <body>
           <div id="content">
             {this.props.children}
           </div>
-
           <script dangerouslySetInnerHTML={{__html: state}} />
-
           { script.map((src, k) => <script key={k} src={src} />) }
-
         </body>
       </html>
     );

@@ -1,12 +1,12 @@
 // from https://github.com/acdlite/flummox/issues/161
-import React, { Component } from 'react';
-import FluxComponent from 'flummox/component';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import React, { Component } from "react"; /*eslint no-unused-vars:0*/
+import FluxComponent from "flummox/component";
+import shouldPureComponentUpdate from "react-pure-render/function";
 
 export default function fluxComponentDecorator(fluxComponentProps) {
   return DecoratedComponent => class FluxComponentDecorator extends Component {
 
-    static displayName = (DecoratedComponent.displayName || DecoratedComponent.name || 'Component');
+    static displayName = (DecoratedComponent.displayName || DecoratedComponent.name || "Component");
 
     shouldComponentUpdate = shouldPureComponentUpdate;
 
