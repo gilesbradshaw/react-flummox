@@ -14,12 +14,14 @@ Router.run(routes, Router.HistoryLocation, function (Handler) {
         <Handler/>
         </FluxComponent>
     ).then(h=>console.log(h));*/
+//console.log(JSON.stringify(__resolver__));
+  const resolver = new Resolver(); 
   Resolver.render(
     <FluxComponent flux={flux}>
         <Handler/>
         </FluxComponent>
-    , content);
-  console.log(content.outerHTML);
+    , content,resolver);
+  
 });
 
 

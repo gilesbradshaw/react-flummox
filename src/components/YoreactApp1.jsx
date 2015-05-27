@@ -10,6 +10,7 @@ import { Resolver } from "react-resolver";
 import {List} from "immutable";
 
 
+
 //require("normalize.css");
 //require("../styles/main.css");
 
@@ -27,12 +28,14 @@ class InnerComponent extends React.Component {
     flux.getActions("messages").newMessage("Hello, world!");
   }
   render(){
-    //alert(JSON.stringify(this.props));
+
+    //total frig!!
+    const list = this.props.list.toArray ? this.props.list.toArray() :  this.props.list;
     return <div> 
         <Link to={this.props.link}>{this.props.linkName}</Link>
         <button onClick={this.onClick}>click me</button>
         <ul>
-          {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:-angie!!-:{l.id}</li>)}
+          {list.map(l=><li key={l.id}>{l.content}:-angie!ugsgsgsgsuuuu!-:{l.id}</li>)}
         </ul>
       </div>;
   };
@@ -56,7 +59,7 @@ export default class YoreactApp extends Component {
 
 export var YoAlt = Resolver.createContainer(InnerComponent, {
   resolve: {
-    linkName:()=>"APPPPPP",
+    linkName:()=>"APP",
     link:()=>'app1',  
     list: (props, context)=> 
      new Promise(

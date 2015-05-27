@@ -30,9 +30,8 @@ class HtmlDocument extends React.Component {
   }
 
   render() {
-    const { state, script, css, lang, innerHTML } = this.props;
+    const { script,resolverScript, css, lang, innerHTML } = this.props;
     //const htmlHead = this.context.getStore("HtmlHeadStore");
-
     return (
       <html lang = {lang || "en-GB"}>
         <head>
@@ -45,7 +44,7 @@ class HtmlDocument extends React.Component {
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: innerHTML}}>
           </div>
-          <script dangerouslySetInnerHTML={{__html: state}} />
+          <script async dangerouslySetInnerHTML={{__html:"var __resolver__ = " + JSON.stringify(resolverScript) + ";"}}/>
           { script.map((src, k) => <script key={k} src={src} />) }
         </body>
       </html>
