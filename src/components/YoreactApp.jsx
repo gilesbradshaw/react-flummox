@@ -20,7 +20,7 @@ class InnerComponent extends React.Component {
   }
   onClick(){
     const flux = this.context.flux;
-    flux.getActions("messages").newMessage("Hello, world!");
+    flux.getActions("asyncs").newMessage("Hello, world!");
   }
   render(){
     //alert(JSON.stringify(this.props));
@@ -30,22 +30,26 @@ class InnerComponent extends React.Component {
         <ul>
           {this.props.list.toArray().map(l=><li key={l.id}>{l.content}:-angie app!!-:{l.id}</li>)}
         </ul>
+        <ul>
+          {this.props.beginingList.toArray().map(l=><li key={l.id}>{l.content}:-angie app!!-:{l.id}</li>)}
+        </ul>
       </div>;
   };
 }
 
 @fluxComponent({
   connectToStores: {
-    messages: store => ({
-      list: store.getMessages()
+    asyncs: store => ({
+      list: store.getMessages(),
+      beginingList: store.getBeginingMessages()
     })
   }
 })
 export default class YoreactApp extends Component {
   render() {
-    const {list} = this.props;
+    const {list, beginingList} = this.props;
     return (
-          list ? <InnerComponent list={list}/> : <script/>
+          list ? <InnerComponent list={list} beginingList={beginingList}/> : <script/>
     );
   }
 }

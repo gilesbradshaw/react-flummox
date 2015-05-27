@@ -21,7 +21,8 @@
         "process":false,
         "__dirname":false,
         "console":false,
-        "document":false
+        "document":false,
+        "setTimeout":false
 
     }
 }

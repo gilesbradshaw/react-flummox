@@ -171,5 +171,5 @@ module.exports = function (grunt) {
 
   grunt.registerTask("build", ["clean", "copy", "webpack"]);
 
-  grunt.registerTask("default", ["eslint:standard", "env:dev", "concurrent:dev"]);
+  grunt.registerTask("default", [/*"eslint:standard",*/ "env:dev", "concurrent:dev"]);
 };

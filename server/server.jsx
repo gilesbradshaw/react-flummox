@@ -4,6 +4,7 @@ import Router from "react-router";
 import routes from "../src/routes/routes";
 import {flux} from "../src/flummox/flummox";
 import HtmlDocument from "./HtmlDocument";
+import { Resolver } from "react-resolver";
 
 let webpackStats;
 if (process.env.NODE_ENV === "production") {
@@ -43,18 +44,21 @@ app.use( function (req, res){
         routes: routes,
         location: req.url
     });
-    router.run((_Handler)=>{
-      const h2 = React.renderToStaticMarkup(
-        <HtmlDocument
-          script={webpackStats.script}
-          css={webpackStats.css}>
-          <FluxComponent flux={flux}>
+    router.run((_Handler)=>
+      Resolver.renderToString(
+        <FluxComponent flux={flux}>
               <_Handler/>
-          </FluxComponent>
-        </HtmlDocument>
-      );
-      res.send(h2);
-    });
+          </FluxComponent>)
+      .then(innerHTML=>{
+        console.log(innerHTML);
+        res.send(React.renderToStaticMarkup(
+          <HtmlDocument
+            script={webpackStats.script}
+            css={webpackStats.css} innerHTML={innerHTML}>          
+          </HtmlDocument>
+        )
+      )}
+    ));
 
 });
 

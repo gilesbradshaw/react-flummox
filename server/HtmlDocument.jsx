@@ -15,12 +15,14 @@ class HtmlDocument extends React.Component {
     //state: PropTypes.string.isRequired,
     //markup: PropTypes.string.isRequired,
     script: PropTypes.arrayOf(PropTypes.string),
-    css: PropTypes.arrayOf(PropTypes.string)
+    css: PropTypes.arrayOf(PropTypes.string),
+    innerHTML: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
     script: [],
-    css: []
+    css: [],
+    innerHTML:''
   }
 
   static contextTypes = {
@@ -28,7 +30,7 @@ class HtmlDocument extends React.Component {
   }
 
   render() {
-    const { state, script, css, lang } = this.props;
+    const { state, script, css, lang, innerHTML } = this.props;
     //const htmlHead = this.context.getStore("HtmlHeadStore");
 
     return (
@@ -41,8 +43,7 @@ class HtmlDocument extends React.Component {
           }
         </head>
         <body>
-          <div id="content">
-            {this.props.children}
+          <div id="content" dangerouslySetInnerHTML={{__html: innerHTML}}>
           </div>
           <script dangerouslySetInnerHTML={{__html: state}} />
           { script.map((src, k) => <script key={k} src={src} />) }
