@@ -4,14 +4,15 @@ import React, { Component} from "react/addons"; /* eslint no-unused-vars:0*/
 import pureRender from "pure-render-decorator";
 
 
+
 //require("normalize.css");
 //require("../styles/main.css");
 
 
 @pureRender
-export default class PageNotFound extends Component {
+export default class Messages extends Component {
   render(){
     //alert(JSON.stringify(this.props));
-    return <div>WTF am I??</div>;
+    return <div>Messages</div>;
   };
 }

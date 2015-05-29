@@ -50,16 +50,17 @@ app.use( function (req, res){
               <_Handler/>
           </FluxComponent>)
       .then(innerHTML=>{
-        res.send(React.renderToStaticMarkup(
-          <HtmlDocument
-            resolverScript={innerHTML.data}
-            script={webpackStats.script}
-            css={webpackStats.css} innerHTML={innerHTML.toString()}>          
-          </HtmlDocument>
-        )
-      )}
+        res.send(
+          React.renderToStaticMarkup(
+            <HtmlDocument
+              resolverScript={innerHTML.data}
+              script={webpackStats.script}
+              css={webpackStats.css} innerHTML={innerHTML.toString()}>
+            </HtmlDocument>
+          )
+        );
+      }
     ));
-
 });
 
 if (app.get("env") === "development") {

@@ -16,13 +16,13 @@ class HtmlDocument extends React.Component {
     //markup: PropTypes.string.isRequired,
     script: PropTypes.arrayOf(PropTypes.string),
     css: PropTypes.arrayOf(PropTypes.string),
-    innerHTML: PropTypes.string.isRequired,
+    innerHTML: PropTypes.string.isRequired
   }
 
   static defaultProps = {
     script: [],
     css: [],
-    innerHTML:''
+    innerHTML: ""
   }
 
   static contextTypes = {
@@ -30,7 +30,7 @@ class HtmlDocument extends React.Component {
   }
 
   render() {
-    const { script,resolverScript, css, lang, innerHTML } = this.props;
+    const { script, resolverScript, css, lang, innerHTML } = this.props;
     //const htmlHead = this.context.getStore("HtmlHeadStore");
     return (
       <html lang = {lang || "en-GB"}>
@@ -44,7 +44,7 @@ class HtmlDocument extends React.Component {
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: innerHTML}}>
           </div>
-          <script async dangerouslySetInnerHTML={{__html:"var __resolver__ = " + JSON.stringify(resolverScript) + ";"}}/>
+          <script async dangerouslySetInnerHTML={{__html: "var __resolver__ = " + JSON.stringify(resolverScript) + ";"}}/>
           { script.map((src, k) => <script key={k} src={src} />) }
         </body>
       </html>

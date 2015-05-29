@@ -2,6 +2,8 @@
 
 import React, { Component} from "react/addons"; /* eslint no-unused-vars:0*/
 import pureRender from "pure-render-decorator";
+import {RouteHandler, Link} from "react-router";
+
 
 
 //require("normalize.css");
@@ -9,9 +11,14 @@ import pureRender from "pure-render-decorator";
 
 
 @pureRender
-export default class PageNotFound extends Component {
+export default class MainPage extends Component {
   render(){
     //alert(JSON.stringify(this.props));
-    return <div>WTF am I??</div>;
+    return (
+        <div>
+            <div>MainPage</div>
+            <RouteHandler {...this.props} />
+        </div>
+    );
   };
 }

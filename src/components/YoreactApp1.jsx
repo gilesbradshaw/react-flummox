@@ -30,8 +30,8 @@ class InnerComponent extends React.Component {
   render(){
 
     //total frig!!
-    const list = this.props.list.toArray ? this.props.list.toArray() :  this.props.list;
-    return <div> 
+    const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
+    return <div>
         <Link to={this.props.link}>{this.props.linkName}</Link>
         <button onClick={this.onClick}>click me</button>
         <ul>
@@ -59,15 +59,15 @@ export default class YoreactApp extends Component {
 
 export var YoAlt = Resolver.createContainer(InnerComponent, {
   resolve: {
-    linkName:()=>"APP",
-    link:()=>'app1',  
-    list: (props, context)=> 
+    linkName: ()=>"APP",
+    link: ()=>"app1",
+    list: ()=>
      new Promise(
         resolve=>
           setTimeout(
             (()=>{
                 console.log("promise resolving...");
-                resolve(new List([{id:0,content:"ahhhh"}]));
+                resolve(new List([{id: 0, ntent: "ahhhh"}]));
               }
               ),
             1000)
