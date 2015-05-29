@@ -1,28 +1,35 @@
-import React, { Component} from "react/addons"; /* eslint no-unused-vars:0*/
-import pureRender from "pure-render-decorator";
-import CentralLead from "./CentralLead";
-import AddEnquiry from "./AddEnquiry";
-import UpdateEnquiry from "./UpdateEnquiry";
+import PageFactory, {pageMaker} from "../../../utils/PageFactory";
 
+const pages = [
+  new PageFactory()
+    .path("add")
+    .title("Add"),
+  new PageFactory()
+    .path("update")
+    .title("Update"),
+  new PageFactory()
+    .path("central-lead")
+    .title("Central lead"),
+  new PageFactory()
+    .path("listing")
+    .title("Listing"),
+  new PageFactory()
+    .path("orders")
+    .title("Orders"),
+  new PageFactory()
+    .path("exec-diary")
+    .title("Exec diary"),
+  new PageFactory()
+    .path("used-ehicle-stock-list")
+    .title("Used vehicle stock list"),
+  new PageFactory()
+    .path("trade-in-search")
+    .title("Trade in search"),
+  new PageFactory()
+    .path("vista-report")
+    .title("Vista report")
+];
 
-export default {
-    CentralLead,
-    UpdateEnquiry,
-    AddEnquiry
-};
-
-@pureRender
-class _AddEnquiry extends Component {
-  render(){
-    //alert(JSON.stringify(this.props));
-    return <div>Add enquiry</div>;
-  };
-}
-
-@pureRender
-class _UpdateEnquiry extends Component {
-  render(){
-    //alert(JSON.stringify(this.props));
-    return <div>Add enquiry</div>;
-  };
-}
+const toBeExported = pageMaker("enquiry", "sales-enquiry", "Enquiry", pages);
+export default toBeExported.Page;
+export const {routes, Menu} = toBeExported;

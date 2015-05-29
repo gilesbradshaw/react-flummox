@@ -114,7 +114,7 @@ module.exports = function (grunt) {
         script: "index.js",
         options: {
           ext: "js,jsx,html",
-          watch: ["views", "server"],
+          watch: [".", "views", "server"],
           nodeArgs: ["--debug"]
         }
       }

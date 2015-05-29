@@ -9,7 +9,6 @@ import pureRender from "pure-render-decorator";
 //require("../styles/main.css");
 
 
-@pureRender
 export default class Management extends Component {
   render(){
     //alert(JSON.stringify(this.props));

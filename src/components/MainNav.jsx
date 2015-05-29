@@ -10,26 +10,12 @@ import {RouteHandler, Link} from "react-router";
 //require("../styles/main.css");
 
 
-@pureRender
 export default class MainNav extends Component {
   render(){
-    //alert(JSON.stringify(this.props));
     return (
         <div>
             <div>Main Nav</div>
             <ul>
-                <li><Link to="management">Management</Link></li>
-            </ul>
-            <RouteHandler {...this.props} />
-        </div>
-    );
-  };
-}
-
-
-/*
-
-<ul>
                 <li><Link to="app">Home</Link></li>
                 <li><Link to="sales">Sales</Link></li>
                 <li><Link to="management">Management</Link></li>
@@ -38,5 +24,8 @@ export default class MainNav extends Component {
                 <li><Link to="support">Support</Link></li>
                 <li><Link to="language">Language</Link></li>
             </ul>
-
-            */
+            <RouteHandler {...this.props} />
+        </div>
+    );
+  };
+}
