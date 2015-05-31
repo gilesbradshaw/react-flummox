@@ -6,7 +6,7 @@ import fluxComponent from "../flummox/decorators/fluxComponent";
 import fluxContext from "../flummox/decorators/fluxContext";
 import displayName from "../flummox/decorators/displayName";
 import {Link} from "react-router";
-import { Resolver } from "react-resolver";
+import {Resolver} from "react-resolver";
 import {List} from "immutable";
 
 
@@ -67,7 +67,7 @@ export var YoAlt = Resolver.createContainer(InnerComponent, {
           setTimeout(
             (()=>{
                 console.log("promise resolving...");
-                resolve(new List([{id: 0, ntent: "ahhhh"}]));
+                resolve(new List([{id: 0, content: "ahhhh"}]));
               }
               ),
             1000)

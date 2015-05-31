@@ -1,6 +1,9 @@
 import React, { Component} from "react/addons"; /* eslint no-unused-vars:0*/
-import {Route, Link, RouteHandler} from "react-router";
+import {Route, DefaultRoute, Link, RouteHandler} from "react-router";
 import _ from "lodash";
+import {List} from "immutable";
+import dataDependencies from "./decorators/dataDependencies";
+import displayName from "./decorators/displayName";
 
 export default class {
   made = {}
@@ -58,20 +61,45 @@ export const pageMaker = (path, name, title, pages)=>
         );
       }
     }
+    @dataDependencies({
+      list: ()=>
+        new Promise(
+          resolve=>
+            setTimeout(
+              (()=>{
+                  resolve(new List([{id: 0, content: "ahhhh"}]));
+                }
+              ),
+              1000)
+        )
+    })
+    @displayName(`${name}-Page`)
     class Page extends Component {
       render(){
-        //alert(JSON.stringify(this.props));
+        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
         return (
           <div>
             <div>{title}</div>
-            <Menu/>
+            <ul>
+              {list.map(l=><li key={l.id}>{l.content}:-angie!ugsgsgsgsuuuu!-:{l.id}</li>)}
+            </ul>
             <RouteHandler {...this.props} />
+          </div>
+        );
+      };
+    }
+    class DefaultPage extends Component {
+      render(){
+        return (
+          <div>
+            <Menu/>
           </div>
         );
       };
     }
     const routes = ()=>
       <Route path={path} name={name} handler={Page}>
+        <DefaultRoute handler={DefaultPage}/>
         {pages.map(r=>r.route())}
       </Route>;
     return {routes, Page, Menu};
