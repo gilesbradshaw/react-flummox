@@ -98,6 +98,7 @@ module.exports = function (grunt) {
     eslint: {
       standard: {
           options: {
+            "quiet": true
               //configFile: "bower_components/eslintconfigs/standard.json"
           },
           src: [

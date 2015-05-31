@@ -69,7 +69,7 @@ class Container extends React.Component {
 
   render() {
     if (!this.state.fulfilled) {
-      return <h1>obtaining data...</h1>;
+      return false;
     }
 
     if (this.props.component) {
@@ -104,9 +104,10 @@ class Container extends React.Component {
 
     if (!nextState.fulfilled) {
       this.getResolver().resolve(this, (finalState) => {
-        return new Promise((resolve) => {
-          this.setState(finalState, resolve);
-        });
+        return this.setState(finalState);
+        //return new Promise((resolve) => {
+        //  this.setState(finalState, resolve);
+        //});
       });
     }
   }

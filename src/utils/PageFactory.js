@@ -6,6 +6,74 @@ import dataDependencies from "./decorators/dataDependencies";
 import displayName from "./decorators/displayName";
 import {chan, take, put, go, timeout} from "../js-csp/src/csp";
 
+
+  @dataDependencies({
+      list: ()=>{
+        return new Promise(
+          resolve=>{
+            const ch = chan();
+            go(function* (){
+                console.log("getting sub sub page");
+                yield timeout(1000);
+                yield put(ch, new List([{id: 0, content: "ahhhh sub sub page"}]));
+            });
+            go(function* (){
+              resolve(yield take(ch));
+            });
+          }
+        );
+      }
+    })
+    @displayName("SubSubPage")
+    class SubSubPage extends Component {
+      render(){
+        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
+        return (
+          <div>
+            <div>Sub page</div>
+            <ul>
+              {list.map(l=><li key={l.id}>{l.content}{l.id}</li>)}
+            </ul>
+          </div>
+        );
+      };
+    }
+
+
+
+  @dataDependencies({
+      list: ()=>{
+        return new Promise(
+          resolve=>{
+            const ch = chan();
+            go(function* (){
+                console.log("getting sub page");
+                yield timeout(1000);
+                yield put(ch, new List([{id: 0, content: "ahhhh sub page"}]));
+            });
+            go(function* (){
+              resolve(yield take(ch));
+            });
+          }
+        );
+      }
+    })
+    @displayName("SubPage")
+    class SubPage extends Component {
+      render(){
+        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
+        return (
+          <div>
+            <div>Sub page</div>
+            <ul>
+              {list.map(l=><li key={l.id}>{l.content}{l.id}<SubSubPage/></li>)}
+            </ul>
+          </div>
+        );
+      };
+    }
+
+
 export default class {
   made = {}
   render(render){
@@ -68,26 +136,15 @@ export const pageMaker = (path, name, title, pages)=>
           resolve=>{
             const ch = chan();
             go(function* (){
+                console.log("getting page");
                 yield timeout(1000);
-                console.log("okkkkkk");
                 yield put(ch, new List([{id: 0, content: "ahhhh"}]));
             });
             go(function* (){
               resolve(yield take(ch));
-              console.log("mmmmmmm");
             });
           }
         );
-        /*new Promise(
-          resolve=>
-            setTimeout(
-              (()=>{
-                  resolve(new List([{id: 0, content: "ahhhh"}]));
-                }
-              ),
-              1000)
-        );
-        */
       }
     })
     @displayName(`${name}-Page`)
@@ -98,7 +155,7 @@ export const pageMaker = (path, name, title, pages)=>
           <div>
             <div>{title}</div>
             <ul>
-              {list.map(l=><li key={l.id}>{l.content}:-angie!ugsgsgsgsuuuu!-:{l.id}</li>)}
+              {list.map(l=><li key={l.id}>{l.content}:-angie!ugsgsgsgsuuuu!-:{l.id}<SubPage/></li>)}
             </ul>
             <RouteHandler {...this.props} />
           </div>

@@ -1,0 +1,19 @@
+
+//render an element into a node using a resolver
+creates a new Container with element as child and the resolver set
+render(element, node, instance = new Resolver())
+
+//soo.....
+//container is created with state of the resolvers get container state
+//get container state returns the current state from states for a containers id
+
+//on mounting and changing props the containers.resolve() is called
+//this sets state to the current getcontainerstate and if state is not fulfilled it calls resolver.resolve - when this calls back with final state it passes back a promise - sets the final state and resolves the promise when re rendered.
+
+container.props.resolve contains promises to be resolved in order to produce state.
+resolver.resolve...
+
+//creates a list of promises and when each promise resolved
+//sets state.values for it
+//awaits all the promises and when all resolved fulfills state ie set state and call back
+

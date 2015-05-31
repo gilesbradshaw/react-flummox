@@ -1,10 +1,10 @@
 import FluxComponent from "flummox/component";
 import React from "react";
 import Router from "react-router";
-import routes from "../src/routes/routes";
-import {flux} from "../src/flummox/flummox";
+import routes from "../routes/routes";
+import {flux} from "../flummox/flummox";
 import HtmlDocument from "./HtmlDocument";
-import { Resolver } from "../src/resolve/index";
+import { Resolver } from "react-resolver"; //../resolve/index";
 
 let webpackStats;
 if (process.env.NODE_ENV === "production") {
@@ -46,7 +46,7 @@ app.use( function (req, res){
     });
     router.run(
       (_Handler)=>{
-        res.send(
+        /*res.send(
           React.renderToStaticMarkup(
             <HtmlDocument
               resolverScript={{}}
@@ -55,7 +55,7 @@ app.use( function (req, res){
             </HtmlDocument>
           )
         );
-        return;
+        return;*/
         Resolver.renderToString( /*eslint no-unreachable:0*/
           <FluxComponent flux={flux}>
                 <_Handler/>

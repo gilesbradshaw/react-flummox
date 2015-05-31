@@ -2,9 +2,11 @@ delete process.env.BROWSER;
 
 // Register babel to have ES6 support on the server
 require("babel/register")({
-  //ignore: [
-    //node_modules/
-  //]
+  ignore: false,
+  only: [
+    "node_modules/js-csp/**/*.*",
+    "src/**/*.*"
+  ]
 });
 
-require("./server/server");
+require("./src/server/server");
