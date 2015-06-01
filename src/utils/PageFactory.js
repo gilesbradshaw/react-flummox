@@ -9,19 +9,13 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
 
   @dataDependencies({
       list: ()=>{
-        return new Promise(
-          resolve=>{
-            const ch = chan();
-            go(function* (){
-                console.log("getting sub sub page");
-                yield timeout(1000);
-                yield put(ch, new List([{id: 0, content: "ahhhh sub sub page"}]));
-            });
-            go(function* (){
-              resolve(yield take(ch));
-            });
-          }
-        );
+        const ch = chan();
+        go(function* (){
+          console.log("getting sub sub page");
+          yield timeout(1000);
+          yield put(ch, new List([{id: 0, content: "ahhhh sub sub page"}]));
+        });
+        return ch;
       }
     })
     @displayName("SubSubPage")
@@ -43,19 +37,13 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
 
   @dataDependencies({
       list: ()=>{
-        return new Promise(
-          resolve=>{
-            const ch = chan();
-            go(function* (){
-                console.log("getting sub page");
-                yield timeout(1000);
-                yield put(ch, new List([{id: 0, content: "ahhhh sub page"}]));
-            });
-            go(function* (){
-              resolve(yield take(ch));
-            });
-          }
-        );
+        const ch = chan();
+        go(function* (){
+            console.log("getting sub page");
+            yield timeout(1000);
+            yield put(ch, new List([{id: 0, content: "ahhhh sub page"}]));
+        });
+        return ch;
       }
     })
     @displayName("SubPage")
@@ -132,19 +120,13 @@ export const pageMaker = (path, name, title, pages)=>
     }
     @dataDependencies({
       list: ()=>{
-        return new Promise(
-          resolve=>{
-            const ch = chan();
-            go(function* (){
-                console.log("getting page");
-                yield timeout(1000);
-                yield put(ch, new List([{id: 0, content: "ahhhh"}]));
-            });
-            go(function* (){
-              resolve(yield take(ch));
-            });
-          }
-        );
+        const ch = chan();
+        go(function* (){
+          console.log("getting page");
+          yield timeout(1000);
+          yield put(ch, new List([{id: 0, content: "ahhhh"}]));
+        });
+        return ch;
       }
     })
     @displayName(`${name}-Page`)

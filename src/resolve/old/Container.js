@@ -68,6 +68,7 @@ class Container extends React.Component {
   }
 
   render() {
+    console.log("render called");
     if (!this.state.fulfilled) {
       return false;
     }
@@ -104,9 +105,10 @@ class Container extends React.Component {
 
     if (!nextState.fulfilled) {
       this.getResolver().resolve(this, (finalState) => {
-        return new Promise((resolve) => {
+        return this.setState(finalState);
+        /*return new Promise((resolve) => {
           this.setState(finalState, resolve);
-        });
+        });*/
       });
     }
   }

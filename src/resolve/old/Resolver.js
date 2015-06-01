@@ -2,56 +2,30 @@ import React from "react";
 
 import Container from "./Container";
 import ResolverError from "./ResolverError";
-import {chan, take, put, go, timeout} from "../js-csp/src/csp"; /*eslint no-unused-vars:0 */
-
 
 export default class Resolver {
   constructor(states = {}) {
+    this.frozen = false;
+    this.promises = [];
     this.states = states;
   }
-  promises=[];
-  frozen=false;
-  awaitChan=chan();
 
+  await(promises = []) {
+    this.promises = this.promises.concat(promises);
 
-  finish(renderer, values=[]) {
-     const self = this;
-    const innerFinish = (_values, resolve) =>
-    {
-      console.log("finsish ::: " + _values.length);
-      const total = self.promises.length;
-      renderer();
-      if (this.promises.length > total) {
-        go(function* (){
-          const vals = yield self.awaitChan;
-           console.log("got ::: " + vals.length);
-          innerFinish(_values.concat(vals), resolve);
-        });
-      }
-      else
-      {
-        resolve(values);
-      }
-    };
-
-
-    return new Promise(resolve=>innerFinish( values, resolve));
+    return Promise.all(promises);
   }
 
-  finishold(renderer, values=[]) {
-    //renderer();
-    const self = this;
-    const finishPromise = new Promise((resolve)=>{
-      //resolve([]);
-      go(function* (){
-        const vals = yield self.awaitChan;
-        console.log("values:" + vals.length);
-        //vals = [];
-        //resolve(vals); // self.awaitChan);
-        resolve(vals);
+  finish(renderer, values=[]) {
+    const total = this.promises.length;
+    renderer();
+    if (this.promises.length > total) {
+      return Promise.all(this.promises).then((valueResults) => {
+        return this.finish(renderer, valueResults);
       });
-    });
-    return finishPromise;
+    }
+    console.log("values" + values.length);
+    return Promise.resolve(values);
   }
 
   freeze() {
@@ -67,7 +41,6 @@ export default class Resolver {
   }
 
   getContainerState(container) {
-
     const { id } = container;
 
     if (!id) {
@@ -112,11 +85,10 @@ export default class Resolver {
     if (typeof __resolver__ === "undefined") {
       return null;
     }
-    return __resolver__[id]; /*eslint no-undef:0*/
+    return __resolver__[id]; /*eslint no-undef:0 */
   }
 
   resolve(container, callback) {
-    const self = this;
     const asyncProps = container.props.resolve || {};
     const state = this.getContainerState(container);
 
@@ -134,20 +106,17 @@ export default class Resolver {
       // Filter out pre-loaded values
       .filter((asyncProp) => {
         return !state.values.hasOwnProperty(asyncProp);
-      });
+      })
+    ;
 
     if (!asyncKeys.length) {
-      this.fulfillState(state, callback);
-      go(function* (){
-        console.log("putting none");
-        yield put(self.awaitChan, []);
-      });
+      return Promise.resolve(this.fulfillState(state, callback));
     }
 
     if (this.frozen) {
       throw new ResolverError([
         "Resolver is frozen for server rendering.",
-        `${container.constructor.displayName} (#${container.id}) should have already resolved`//,
+        `${container.constructor.displayName} (#${container.id}) should have already resolved` //,
         //`"${asyncKeys.join("\", \"")}". (http://git.io/vvvkr)`,
       ].join(" "));
     }
@@ -158,31 +127,18 @@ export default class Resolver {
         ? container.props[prop]
         : valueOf(container.props.props, container.props.context)
       ;
-      return {prop, value};
-    });
-     console.log("P LENGTH " + promises.length);
-    const {rejectState, fulfillState} = this;
-    this.promises = this.promises.concat(promises);
-    go(function* (){
-      try{
-        console.log("P LENGTH1 " + promises.length);
-        for(let promise of promises)
-        {
-          console.log(promise.prop);
-          state.values[promise.prop] = promise.result = yield promise.value;
-          console.log("got!!!¬");
-        }
-        console.log("P LENGTH2 " + promises.length);
-        const toPut = promises.map(p=>p.result);
-        console.log("putting some " + toPut.length);
-        fulfillState.bind(self)(state, callback);
-        yield put(self.awaitChan, promises.filter(p=>p.result).map(p=>p.result));
-      }
-      catch(error){
-        rejectState.bind(self)(error, state, callback);
-      }
 
+      return Promise.resolve(value).then((resolved) => {
+        state.values[prop] = resolved;
+
+        return resolved;
+      });
     });
+
+    return this.await(promises).then(
+      () => this.fulfillState(state, callback),
+      (error) => this.rejectState(error, state, callback)
+    );
   }
 
   static createContainer(Component, props = {}) {
@@ -197,12 +153,12 @@ export default class Resolver {
             component={Component}
             context={this.context}
             props={this.props}
-            {...props}/>
+            {...props}
+          />
         );
       }
     }
 
-    ComponentContainer.childContextTypes = props.childContextTypes;
     ComponentContainer.contextTypes = props.contextTypes;
     ComponentContainer.displayName = `${Component.displayName}Container`;
 
@@ -226,9 +182,7 @@ export default class Resolver {
     return resolver.finish(()=>React.renderToString(context))
       .then(() => {
         resolver.freeze();
-        console.log("here");
         var html = React.renderToString(context);
-        console.log("there");
         return {
           data: resolver.states,
           toString() { return html; }

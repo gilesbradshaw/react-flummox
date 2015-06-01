@@ -4,7 +4,7 @@ import Router from "react-router";
 import routes from "../routes/routes";
 import {flux} from "../flummox/flummox";
 import HtmlDocument from "./HtmlDocument";
-import { Resolver } from "react-resolver"; //../resolve/index";
+import { Resolver } from "../resolve/index";// "react-resolver"; //"../resolve/index"; //"react-resolver"; //
 
 let webpackStats;
 if (process.env.NODE_ENV === "production") {
@@ -61,6 +61,7 @@ app.use( function (req, res){
                 <_Handler/>
             </FluxComponent>)
         .then(innerHTML=>{
+          console.log("to static markup");
           res.send(
             React.renderToStaticMarkup(
               <HtmlDocument
