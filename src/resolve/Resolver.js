@@ -106,7 +106,6 @@ export default class Resolver {
     if (callback) {
       callback(state);
     }
-
     throw new Error(`${this.constructor.displayName} was rejected: ${error}`);
   }
 
@@ -118,7 +117,6 @@ export default class Resolver {
   }
 
   resolve(container, callback) {
-    console.log("r");
     const self = this;
     const asyncProps = container.props.resolve || {};
     const state = this.getContainerState(container);
@@ -169,14 +167,19 @@ export default class Resolver {
       try{
         for(let channel of channels)
         {
-          state.values[channel.prop] = channel.result = yield channel.value;
+          const result = channel.result = yield channel.value;
+          if(Object.prototype.toString.call(result) === "[object Error]")
+          {
+            throw result;
+          }
+          state.values[channel.prop] = channel.result;// = result;
         }
         const toPut = channels.map(p=>p.result);
         fulfillState.bind(self)(state, callback);
         yield put(self.awaitChan, channels.filter(p=>p.result).map(p=>p.result));
       }
       catch(error){
-        rejectState.bind(self)(error, state, callback);
+         rejectState.bind(self)(error, state, callback);
       }
 
     });

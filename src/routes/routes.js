@@ -2,6 +2,7 @@
 import React from "react"; /*eslint no-unused-vars:0 */
 import MainPage from "../components/MainPage";
 import MainNav from "../components/MainNav";
+import Home from "../components/Home";
 import Sales, {routes as salesRoutes} from "../components/Sales/Index";
 import Enquiry, {
     routes as enquiryRoutes
@@ -17,6 +18,7 @@ import {DefaultRoute, Route, NotFoundRoute} from "react-router";
 
 const routes =
   <Route path="/" name="app" handler={MainNav}>
+    <DefaultRoute handler={Home}/>
     {salesRoutes()}
     <Route path="management" name="management" handler={Management}>
     </Route>

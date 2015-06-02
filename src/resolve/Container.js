@@ -64,12 +64,30 @@ class Container extends React.Component {
   }
 
   shouldComponentUpdate(props, state) {
-    return state.fulfilled;
+    return state.fulfilled || state.error;
   }
 
   render() {
+    if(this.state.error)
+    {
+      if(this.props.component && this.props.component.errorRender)
+      {
+        return this.props.component.errorRender(this.state);
+      }
+      else
+      {
+        return false;
+      }
+    }
     if (!this.state.fulfilled) {
-      return false;
+       if(this.props.component && this.props.component.waitRender)
+        {
+          return this.props.component.waitRender(this.state);
+        }
+        else
+        {
+          return false;
+        }
     }
 
     if (this.props.component) {

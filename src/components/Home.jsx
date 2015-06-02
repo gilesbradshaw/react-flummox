@@ -3,7 +3,7 @@
 import React, { Component} from "react/addons"; /* eslint no-unused-vars:0*/
 import {RouteHandler} from "react-router";
 import pureRender from "pure-render-decorator";
-import dataDependencies, {errorRender, waitRender} from "../utils/decorators/dataDependencies";
+import dataDependencies from "../utils/decorators/dataDependencies";
 import displayName from "../utils/decorators/displayName";
 import {chan, take, put, go, timeout} from "../js-csp/src/csp";
 import {List} from "immutable";
@@ -17,7 +17,6 @@ import {List} from "immutable";
     const ch = chan();
     go(function* (){
       yield timeout(1000);
-      yield put(ch, new Error("it is an error"));
       yield put(ch, new List(
         [
             {
@@ -38,19 +37,13 @@ import {List} from "immutable";
     return ch;
   }
 })
-@errorRender((state) => <h1 style={{color: "red"}}>error:{state.error.message}</h1>)
-@waitRender((state) => <h1 style={{color: "green"}}>WAITING!!!!!!!!!!!!!!!!</h1>)
-@displayName("News")
-export default class News extends Component {
+@displayName("Home")
+export default class Home extends Component {
   render(){
-    if(this.state.error)
-    {
-        return <div>{this.state.error}</div>;
-    }
     const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
         return (
           <div>
-            <div>News</div>
+            <div>Home</div>
             <ul>
               {list
                 .map(l=>
@@ -65,4 +58,3 @@ export default class News extends Component {
         );
   };
 }
-//News.errorRender = (state)=><div>an error</div>;

@@ -122,7 +122,6 @@ export const pageMaker = (path, name, title, pages)=>
       list: ()=>{
         const ch = chan();
         go(function* (){
-          console.log("getting page");
           yield timeout(100);
           yield put(ch, new List([{id: 0, content: "ahhhh"}]));
         });
