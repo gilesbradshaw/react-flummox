@@ -12,7 +12,7 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
         const ch = chan();
         go(function* (){
           console.log("getting sub sub page");
-          yield timeout(1000);
+          yield timeout(100);
           yield put(ch, new List([{id: 0, content: "ahhhh sub sub page"}]));
         });
         return ch;
@@ -40,7 +40,7 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
         const ch = chan();
         go(function* (){
             console.log("getting sub page");
-            yield timeout(1000);
+            yield timeout(100);
             yield put(ch, new List([{id: 0, content: "ahhhh sub page"}]));
         });
         return ch;
@@ -123,7 +123,7 @@ export const pageMaker = (path, name, title, pages)=>
         const ch = chan();
         go(function* (){
           console.log("getting page");
-          yield timeout(1000);
+          yield timeout(100);
           yield put(ch, new List([{id: 0, content: "ahhhh"}]));
         });
         return ch;
@@ -137,7 +137,16 @@ export const pageMaker = (path, name, title, pages)=>
           <div>
             <div>{title}</div>
             <ul>
-              {list.map(l=><li key={l.id}>{l.content}:-angie!ugsgsgsgsuuuu!-:{l.id}<SubPage/></li>)}
+              {list
+                .map(l=>
+                  <li key={l.id}>
+                    {l.content}
+                    :-angie!ugsgsgsgsuuuu!-:
+                    {l.id}
+                    <SubPage/>
+                  </li>
+                )
+              }
             </ul>
             <RouteHandler {...this.props} />
           </div>

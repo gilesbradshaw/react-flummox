@@ -5,53 +5,55 @@ import ResolverError from "./ResolverError";
 import {chan, take, put, go, timeout} from "../js-csp/src/csp"; /*eslint no-unused-vars:0 */
 
 
+const myRenderTo = (element, renderFunc) =>
+  new Promise(resolve=>
+    {
+      const resolver = new Resolver(); /*eslint no-use-before-define:0*/
+      const context = <Container resolver={resolver}>{element}</Container>;
+      go(function* (){
+        let html = yield resolver.finish(()=>renderFunc(context));
+        resolver.freeze();
+        //var html = React.renderToStaticMarkup(context);
+        resolve({
+            data: resolver.states,
+            toString() { return html; }
+          });
+      });
+    }
+  );
+
 export default class Resolver {
   constructor(states = {}) {
     this.states = states;
   }
-  promises=[];
+  channels=[];
   frozen=false;
   awaitChan=chan();
 
-
   finish(renderer, values=[]) {
-     const self = this;
-    const innerFinish = (_values, resolve) =>
-    {
-      console.log("finsish ::: " + _values.length);
-      const total = self.promises.length;
-      renderer();
-      if (this.promises.length > total) {
-        go(function* (){
-          const vals = yield self.awaitChan;
-           console.log("got ::: " + vals.length);
-          innerFinish(_values.concat(vals), resolve);
-        });
-      }
-      else
-      {
-        resolve(values);
-      }
-    };
-
-
-    return new Promise(resolve=>innerFinish( values, resolve));
-  }
-
-  finishold(renderer, values=[]) {
-    //renderer();
     const self = this;
-    const finishPromise = new Promise((resolve)=>{
-      //resolve([]);
-      go(function* (){
-        const vals = yield self.awaitChan;
-        console.log("values:" + vals.length);
-        //vals = [];
-        //resolve(vals); // self.awaitChan);
-        resolve(vals);
-      });
+    const finishChannel = chan();
+
+    go(function* (){
+      var complete = false;
+      var total = self.channels.length;
+      while(!complete)
+      {
+        renderer();
+        if(self.channels.length > total)
+        {
+          total = self.channels.length;
+          values = values.concat(yield self.awaitChan);
+        }
+        else
+        {
+          yield put(finishChannel, renderer());
+          complete = true;
+        }
+      }
     });
-    return finishPromise;
+
+    return finishChannel;
   }
 
   freeze() {
@@ -116,6 +118,7 @@ export default class Resolver {
   }
 
   resolve(container, callback) {
+    console.log("r");
     const self = this;
     const asyncProps = container.props.resolve || {};
     const state = this.getContainerState(container);
@@ -139,7 +142,6 @@ export default class Resolver {
     if (!asyncKeys.length) {
       this.fulfillState(state, callback);
       go(function* (){
-        console.log("putting none");
         yield put(self.awaitChan, []);
       });
     }
@@ -148,11 +150,12 @@ export default class Resolver {
       throw new ResolverError([
         "Resolver is frozen for server rendering.",
         `${container.constructor.displayName} (#${container.id}) should have already resolved`//,
+        //i've only commented this out because it scuppers my sublime text colouring
         //`"${asyncKeys.join("\", \"")}". (http://git.io/vvvkr)`,
       ].join(" "));
     }
 
-    const promises = asyncKeys.map((prop) => {
+    const channels = asyncKeys.map((prop) => {
       const valueOf = container.props.resolve[prop];
       const value = container.props.hasOwnProperty(prop)
         ? container.props[prop]
@@ -160,23 +163,17 @@ export default class Resolver {
       ;
       return {prop, value};
     });
-     console.log("P LENGTH " + promises.length);
     const {rejectState, fulfillState} = this;
-    this.promises = this.promises.concat(promises);
+    this.channels = this.channels.concat(channels);
     go(function* (){
       try{
-        console.log("P LENGTH1 " + promises.length);
-        for(let promise of promises)
+        for(let channel of channels)
         {
-          console.log(promise.prop);
-          state.values[promise.prop] = promise.result = yield promise.value;
-          console.log("got!!!¬");
+          state.values[channel.prop] = channel.result = yield channel.value;
         }
-        console.log("P LENGTH2 " + promises.length);
-        const toPut = promises.map(p=>p.result);
-        console.log("putting some " + toPut.length);
+        const toPut = channels.map(p=>p.result);
         fulfillState.bind(self)(state, callback);
-        yield put(self.awaitChan, promises.filter(p=>p.result).map(p=>p.result));
+        yield put(self.awaitChan, channels.filter(p=>p.result).map(p=>p.result));
       }
       catch(error){
         rejectState.bind(self)(error, state, callback);
@@ -220,36 +217,13 @@ export default class Resolver {
   }
 
   static renderToString(element) {
-    const resolver = new Resolver();
-    const context = <Container resolver={resolver}>{element}</Container>;
-
-    return resolver.finish(()=>React.renderToString(context))
-      .then(() => {
-        resolver.freeze();
-        console.log("here");
-        var html = React.renderToString(context);
-        console.log("there");
-        return {
-          data: resolver.states,
-          toString() { return html; }
-        };
-      });
+    return myRenderTo(element, React.renderToString);
   }
 
   static renderToStaticMarkup(element) {
-    const resolver = new Resolver();
-    const context = <Container resolver={resolver}>{element}</Container>;
-
-
-    return resolver.finish(()=>React.renderToStaticMarkup(context)).then(() => {
-      resolver.freeze();
-
-      var html = React.renderToStaticMarkup(context);
-      return {
-        data: resolver.states,
-        toString() { return html; }
-      };
-    });
+    return myRenderTo(element, React.renderToStaticMarkup);
   }
 
 }
+
+

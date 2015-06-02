@@ -16,7 +16,7 @@ import {DefaultRoute, Route, NotFoundRoute} from "react-router";
 
 
 const routes =
-  <Route path="app" name="app" handler={MainNav}>
+  <Route path="/" name="app" handler={MainNav}>
     {salesRoutes()}
     <Route path="management" name="management" handler={Management}>
     </Route>
