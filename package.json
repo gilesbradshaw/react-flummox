@@ -10,6 +10,7 @@
   "mainInput": "main",
   "mainOutput": "main",
   "dependencies": {
+    "array-find": "^1.0.0",
     "body-parser": "^1.12.4",
     "console-polyfill": "^0.2.1",
     "debug": "^2.2.0",
@@ -30,6 +31,7 @@
     "react-resolver": "^1.1.7",
     "react-router": "^0.13.3",
     "reflux": "^0.2.7",
+    "transducers.js": "^0.3.2",
     "webpack": "^1.5.1"
   },
   "devDependencies": {

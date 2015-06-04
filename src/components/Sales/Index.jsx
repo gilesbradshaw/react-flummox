@@ -26,12 +26,11 @@ import {List} from "immutable";
 @displayName("SalesPage")
 class SalesPage extends Component {
   render(){
-    const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
     return (
       <div>
         <div>Sales page</div>
         <ul>
-          {list.map(l=><li key={l.id}>{l.content}{l.id}<SalesSubPage/></li>)}
+          {new List(this.props.list).map(l=><li key={l.id}>{l.content}{l.id}<SalesSubPage/></li>)}
         </ul>
       </div>
     );
@@ -51,12 +50,11 @@ class SalesPage extends Component {
 @displayName("SalesSubPage")
 class SalesSubPage extends Component {
   render(){
-    const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
     return (
       <div>
         <div>Sales Sub page</div>
         <ul>
-          {list.map(l=><li key={l.id}>{l.content}{l.id}</li>)}
+          {new List(this.props.list).map(l=><li key={l.id}>{l.content}{l.id}</li>)}
         </ul>
       </div>
     );

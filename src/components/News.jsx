@@ -17,7 +17,6 @@ import {List} from "immutable";
     const ch = chan();
     go(function* (){
       yield timeout(1000);
-      yield put(ch, new Error("it is an error"));
       yield put(ch, new List(
         [
             {
@@ -34,6 +33,23 @@ import {List} from "immutable";
             }
         ]
       ));
+      yield timeout(1000);
+      yield put(ch, new List(
+        [
+            {
+                id: 0,
+                content: "good news is no news"
+            },
+            {
+                id: 1,
+                content: "there is strange news from another star"
+            },
+            {
+                id: 2,
+                content: "send reinforcements we are going to a dance"
+            }
+        ]
+      ));
     });
     return ch;
   }
@@ -43,26 +59,25 @@ import {List} from "immutable";
 @displayName("News")
 export default class News extends Component {
   render(){
-    if(this.state.error)
+    if(this.state && this.state.error)
     {
         return <div>{this.state.error}</div>;
     }
-    const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
-        return (
-          <div>
-            <div>News</div>
-            <ul>
-              {list
-                .map(l=>
-                  <li key={l.id}>
-                    {l.content}
-                   </li>
-                )
-              }
-            </ul>
-            <RouteHandler {...this.props} />
-          </div>
-        );
+    return (
+      <div>
+        <div>News</div>
+        <ul>
+          {new List(this.props.list)
+            .map(l=>
+              <li key={l.id}>
+                {l.content}
+               </li>
+            )
+          }
+        </ul>
+        <RouteHandler {...this.props} />
+      </div>
+    );
   };
 }
 //News.errorRender = (state)=><div>an error</div>;

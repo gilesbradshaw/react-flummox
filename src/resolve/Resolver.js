@@ -2,25 +2,25 @@ import React from "react";
 
 import Container from "./Container";
 import ResolverError from "./ResolverError";
-import {chan, take, put, go, timeout} from "../js-csp/src/csp"; /*eslint no-unused-vars:0 */
-
+import csp, {chan, alts, take, put, go, timeout} from "../js-csp/src/csp"; /*eslint no-unused-vars:0 */
+import {map} from "transducers.js";
 
 const myRenderTo = (element, renderFunc) =>
-  new Promise(resolve=>
-    {
+  {
+      Resolver.server = true;
       const resolver = new Resolver(); /*eslint no-use-before-define:0*/
       const context = <Container resolver={resolver}>{element}</Container>;
-      go(function* (){
+      return go(function* (){
         let html = yield resolver.finish(()=>renderFunc(context));
         resolver.freeze();
         //var html = React.renderToStaticMarkup(context);
-        resolve({
+        return {
             data: resolver.states,
             toString() { return html; }
-          });
+          };
       });
-    }
-  );
+   };
+
 
 export default class Resolver {
   constructor(states = {}) {
@@ -29,15 +29,13 @@ export default class Resolver {
   channels=[];
   frozen=false;
   awaitChan=chan();
+  refreshChan=chan();
 
   finish(renderer, values=[]) {
     const self = this;
-    const finishChannel = chan();
-
-    go(function* (){
-      var complete = false;
+    return go(function* (){
       var total = self.channels.length;
-      while(!complete)
+      while(true)  /*eslint no-constant-condition:0*/
       {
         renderer();
         if(self.channels.length > total)
@@ -47,13 +45,10 @@ export default class Resolver {
         }
         else
         {
-          yield put(finishChannel, renderer());
-          complete = true;
+          return renderer();
         }
       }
     });
-
-    return finishChannel;
   }
 
   freeze() {
@@ -96,6 +91,10 @@ export default class Resolver {
       .filter(key => key.indexOf(id) === 0)
       .forEach(key => this.states[key] = undefined)
     ;
+    const self = this;
+    go(function*(){
+      yield self.refreshChan.close();
+    });
   }
 
   rejectState(error, state, callback) {
@@ -120,7 +119,6 @@ export default class Resolver {
     const self = this;
     const asyncProps = container.props.resolve || {};
     const state = this.getContainerState(container);
-
     const asyncKeys = Object.keys(asyncProps)
       // Assign existing prop values
       .filter((asyncProp) => {
@@ -176,12 +174,25 @@ export default class Resolver {
         }
         const toPut = channels.map(p=>p.result);
         fulfillState.bind(self)(state, callback);
-        yield put(self.awaitChan, channels.filter(p=>p.result).map(p=>p.result));
+        if(Resolver.server)
+        {
+          yield put(self.awaitChan, channels.filter(p=>p.result).map(p=>p.result));
+        }
       }
       catch(error){
          rejectState.bind(self)(error, state, callback);
       }
-
+      if(!Resolver.server)
+      {
+        const myChannels = channels.map(c=>c.value).concat([self.refreshChan]);
+        var channelResult;
+        while((channelResult = (yield alts(myChannels))).channel !== self.refreshChan)
+        {
+          let channel = channels[channels.map(c=>c.value).indexOf(channelResult.channel)]; /*eslint no-loop-func:0*/
+          state.values[channel.prop] = channel.result = channelResult.value;
+          fulfillState.bind(self)(state, callback);
+        }
+      }
     });
   }
 

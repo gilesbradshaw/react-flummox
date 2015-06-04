@@ -5,6 +5,7 @@ import routes from "../routes/routes";
 import {flux} from "../flummox/flummox";
 import HtmlDocument from "./HtmlDocument";
 import { Resolver } from "../resolve/index";// "react-resolver"; //"../resolve/index"; //"react-resolver"; //
+import csp, {chan, alts, take, put, go, timeout} from "../js-csp/src/csp"; /*eslint no-unused-vars:0 */
 
 let webpackStats;
 if (process.env.NODE_ENV === "production") {
@@ -46,24 +47,14 @@ app.use( function (req, res){
     });
     router.run(
       (_Handler)=>{
-        /*res.send(
-          React.renderToStaticMarkup(
-            <HtmlDocument
-              resolverScript={{}}
-              script={webpackStats.script}
-              css={webpackStats.css} innerHTML=''>
-            </HtmlDocument>
-          )
-        );
-        return;*/
-        Resolver.renderToString( /*eslint no-unreachable:0*/
+        go(function*(){
+          const innerHTML = yield Resolver.renderToString(
           <FluxComponent flux={flux}>
                 <_Handler/>
-            </FluxComponent>)
-        .then(innerHTML=>{
-          console.log("to static markup");
-          res.send(
-            React.renderToStaticMarkup(
+            </FluxComponent>);
+
+         res.send(
+            yield React.renderToStaticMarkup(
               <HtmlDocument
                 resolverScript={innerHTML.data}
                 script={webpackStats.script}

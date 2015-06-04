@@ -21,12 +21,11 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
     @displayName("SubSubPage")
     class SubSubPage extends Component {
       render(){
-        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
         return (
           <div>
             <div>Sub page</div>
             <ul>
-              {list.map(l=><li key={l.id}>{l.content}{l.id}</li>)}
+              {new List(this.props.list).map(l=><li key={l.id}>{l.content}{l.id}</li>)}
             </ul>
           </div>
         );
@@ -49,12 +48,11 @@ import {chan, take, put, go, timeout} from "../js-csp/src/csp";
     @displayName("SubPage")
     class SubPage extends Component {
       render(){
-        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
         return (
           <div>
             <div>Sub page</div>
             <ul>
-              {list.map(l=><li key={l.id}>{l.content}{l.id}<SubSubPage/></li>)}
+              {new List(this.props.list).map(l=><li key={l.id}>{l.content}{l.id}<SubSubPage/></li>)}
             </ul>
           </div>
         );
@@ -131,12 +129,11 @@ export const pageMaker = (path, name, title, pages)=>
     @displayName(`${name}-Page`)
     class Page extends Component {
       render(){
-        const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
         return (
           <div>
             <div>{title}</div>
             <ul>
-              {list
+              {new List(this.props.list)
                 .map(l=>
                   <li key={l.id}>
                     {l.content}

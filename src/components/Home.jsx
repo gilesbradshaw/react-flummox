@@ -40,21 +40,20 @@ import {List} from "immutable";
 @displayName("Home")
 export default class Home extends Component {
   render(){
-    const list = this.props.list.toArray ? this.props.list.toArray() : this.props.list;
-        return (
-          <div>
-            <div>Home</div>
-            <ul>
-              {list
-                .map(l=>
-                  <li key={l.id}>
-                    {l.content}
-                   </li>
-                )
-              }
-            </ul>
-            <RouteHandler {...this.props} />
-          </div>
-        );
+      return (
+        <div>
+          <div>Home</div>
+          <ul>
+            {new List(this.props.list)
+              .map(l=>
+                <li key={l.id}>
+                  {l.content}
+                 </li>
+              )
+            }
+          </ul>
+          <RouteHandler {...this.props} />
+        </div>
+      );
   };
 }
